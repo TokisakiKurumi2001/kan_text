@@ -25,7 +25,7 @@ class KanConv1D(nn.Module):
         unfolded = x.unfold(2, self.kernel_size, self.stride)
 
         # Reshape for linear layer: (batch_size, out_channels, new_width)
-        new_width = unfolded.size(-1)
+        new_width = unfolded.size(-2)
         unfolded = unfolded.permute(0, 2, 1, 3).contiguous().view(batch_size, new_width, -1)
 
         # Apply the linear layer
