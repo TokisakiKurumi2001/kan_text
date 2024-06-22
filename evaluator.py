@@ -21,7 +21,7 @@ if __name__ == "__main__":
     dataloader_config = {
         "tok_pretrained_ck": "roberta-base",
         "valid_ratio": 0.1,
-        "num_train_sample": 10_000,
+        "num_train_sample": 20_000,
         "max_length": 256,
     }
     tekan_dataloader = TeKANDataLoader(**dataloader_config)
