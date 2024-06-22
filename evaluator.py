@@ -32,6 +32,10 @@ if __name__ == "__main__":
     pretrained_model = AutoModel.from_pretrained('roberta-base')
     classifier_model = TeKAN.from_pretrained('tekan_ckpt')
     model = TeKANClassifierModel(pretrained_model, classifier_model)
+
+    device = torch.device('cuda:0')
+    model = model.to(device)
+    model.eval()
     logger.success('Model load successfully')
 
     logger.info('Loading evaluation metrics ...')
@@ -39,8 +43,10 @@ if __name__ == "__main__":
 
     logger.info('Testing ...')
     for batch in tqdm(test_dataloader, desc='Testing', unit='batch'):
+        batch = {k: v.to(device) for k, v in batch.items()}
         labels = batch.pop("labels")
-        logits = model(**batch)
+        with torch.inference_mode():
+            logits = model(**batch)
         predictions = logits.argmax(dim=-1)
 
         decoded_preds, decoded_labels = postprocess(predictions, labels)
