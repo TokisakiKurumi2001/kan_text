@@ -1,0 +1,7 @@
+lightning
+wandb
+transformers
+datasets
+evaluate
+scikit-learn
+loguru

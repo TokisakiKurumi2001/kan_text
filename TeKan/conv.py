@@ -29,7 +29,9 @@ class KanConv1D(nn.Module):
         unfolded = unfolded.permute(0, 2, 1, 3).contiguous().view(batch_size, new_width, -1)
 
         # Apply the linear layer
+        unfolded = unfolded.view(-1, self.in_channels * self.kernel_size)
         out = self.linear(unfolded)
+        out = out.view(batch_size, new_width, -1)
 
         # Permute back to the shape (batch_size, out_channels, new_width)
         out = out.permute(0, 2, 1)

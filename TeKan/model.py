@@ -88,6 +88,7 @@ class TeKAN(TeKANPretrainModel):
     
 class TeKANClassifierModel(nn.Module):
     def __init__(self, pretrained_model: AutoModel, classifier_model: TeKAN):
+        super().__init__()
         self.pretrained_model = pretrained_model
         self.classifier_model = classifier_model
 
@@ -117,7 +118,7 @@ class TeKANClassifierModel(nn.Module):
                 inputs_embeds=inputs_embeds,
                 output_attentions=output_attentions,
                 output_hidden_states=output_hidden_states,
-                return_dict=return_dict,)
+                return_dict=return_dict,).last_hidden_state
         output = self.classifier_model(embeds)
         return output
     

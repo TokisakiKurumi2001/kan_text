@@ -15,7 +15,6 @@ if __name__ == "__main__":
     parser.add_argument("--epoch", type=int, default=10)
     args = parser.parse_args()
 
-    lang = args.lang
     s = args.seed
     lr = args.lr
     seed = seed_everything(s, workers=True)

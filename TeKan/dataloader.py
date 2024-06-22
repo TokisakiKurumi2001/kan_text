@@ -24,15 +24,15 @@ class TeKANDataLoader:
         tokenized_datasets = dataset.map(
             self.__tokenize_function,
             batched=True,
-            remove_columns=dataset.column_names,
+            remove_columns=dataset['train'].column_names,
         )
-        dataset_split = dataset['train'].train_test_split(test_size=valid_ratio)
+        dataset_split = tokenized_datasets['train'].train_test_split(test_size=valid_ratio)
         dataset_split['validation'] = dataset_split.pop('test')
-        dataset_split['test'] = dataset['test']
+        dataset_split['test'] = tokenized_datasets['test']
         self.dataset = dataset_split
 
     def __tokenize_function(self, examples):
-        result = self.tokenizer(examples["text"])
+        result = self.tokenizer(examples["text"], max_length=self.max_length, truncation=True, padding="max_length")
         result['labels'] = examples['label']
         return result
     
@@ -57,7 +57,7 @@ class TeKANDataLoader:
                     self.dataset[t],
                     batch_size=batch_size,
                     collate_fn=self.collator_fn,
-                    num_workers=32,
+                    num_workers=2,
                     shuffle=shuffle,
                 )
             )
