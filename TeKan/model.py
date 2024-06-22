@@ -6,8 +6,6 @@ from torch import Tensor
 from transformers import PreTrainedModel, AutoModel
 
 from .configuration import TeKANConfig
-from .kan import KANLinear
-from .conv import KanConv1D
 
 from functools import reduce
 
@@ -53,7 +51,7 @@ class TeKAN(TeKANPretrainModel):
         self.conv1d_layer = nn.ModuleList()
         for kernel_size, channel in zip(self.config.kernel_sizes, self.config.num_channels):
             self.conv1d_layer.append(
-                KanConv1D(self.config.hidden_size, channel, kernel_size)
+                nn.Conv1d(self.config.hidden_size, channel, kernel_size)
             )
 
         # Pooling
@@ -62,10 +60,10 @@ class TeKAN(TeKANPretrainModel):
 
         # projection to classification
         hidden_dim = reduce(lambda x, y: x + y, self.config.num_channels)
-        self.proj = KANLinear(hidden_dim, hidden_dim)
+        self.proj = nn.Linear(hidden_dim, hidden_dim)
         self.dropout = nn.Dropout(self.config.dropout)
         self.tanh = nn.Tanh()
-        self.out = KANLinear(hidden_dim, self.config.num_classes)
+        self.out = nn.Linear(hidden_dim, self.config.num_classes)
 
     def forward(
         self,
