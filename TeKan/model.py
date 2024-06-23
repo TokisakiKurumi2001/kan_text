@@ -106,7 +106,7 @@ class TeKANClassifierModel(nn.Module):
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
     ) -> Tensor:
-        with torch.inference_mode():
+        with torch.no_grad():
             embeds = self.pretrained_model(
                 input_ids,
                 attention_mask=attention_mask,
